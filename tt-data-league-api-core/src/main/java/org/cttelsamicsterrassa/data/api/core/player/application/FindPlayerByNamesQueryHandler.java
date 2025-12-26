@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FindPlayerByNameQueryHandler extends DomainQueryHandler<FindPlayerByNameQuery> {
+public class FindPlayerByNamesQueryHandler extends DomainQueryHandler<FindPlayerByNamesQuery> {
 
     private final SeasonPlayerRepository seasonPlayerRepository;
 
     @Autowired
-    public FindPlayerByNameQueryHandler(SeasonPlayerRepository seasonPlayerRepository) {
+    public FindPlayerByNamesQueryHandler(SeasonPlayerRepository seasonPlayerRepository) {
         this.seasonPlayerRepository = seasonPlayerRepository;
     }
 
     @Override
-    public DomainQueryResponse handle(FindPlayerByNameQuery findPlayerByNameQuery) {
-        return DomainQueryResponse.sucessResponse(seasonPlayerRepository.findBySimilarName(findPlayerByNameQuery.getName()));
+    public DomainQueryResponse handle(FindPlayerByNamesQuery findPlayerByNameQuery) {
+        return DomainQueryResponse.sucessResponse(seasonPlayerRepository.findBySimilarNames(findPlayerByNameQuery.getStringToSearch()));
     }
 }
