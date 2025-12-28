@@ -14,7 +14,7 @@ public class ModifyClubCommand extends DomainCommand {
 
     private final List<String> yearRanges;
 
-    protected ModifyClubCommand(UUID id, String name, List<String> yearRanges) {
+    public ModifyClubCommand(UUID id, String name, List<String> yearRanges) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
         this.id = id;
         this.name = name;

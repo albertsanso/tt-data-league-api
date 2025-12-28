@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.core.club.application.find_by_name;
+package org.cttelsamicsterrassa.data.api.core.club.application.find;
 
 import org.albertsanso.commons.query.DomainQuery;
 
