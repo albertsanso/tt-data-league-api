@@ -2,8 +2,8 @@ package org.cttelsamicsterrassa.data.api.rest.player;
 
 import org.albertsanso.commons.query.DomainQueryResponse;
 import org.albertsanso.commons.query.QueryBus;
-import org.cttelsamicsterrassa.data.api.core.player.application.FindPlayerByNameQuery;
-import org.cttelsamicsterrassa.data.api.core.player.application.FindPlayerByNamesQuery;
+import org.cttelsamicsterrassa.data.api.core.season_player.find.FindPlayerByNameQuery;
+import org.cttelsamicsterrassa.data.api.core.season_player.find.FindPlayerByNamesQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

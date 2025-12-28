@@ -68,11 +68,9 @@ public class ClubController {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteClub(@RequestBody ClubDto deleteClubDto) {
-        DeleteClubCommand deleteClubCommand = new DeleteClubCommand(
-                deleteClubDto.id()
-        );
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClub(@PathVariable("id") UUID id) {
+        DeleteClubCommand deleteClubCommand = new DeleteClubCommand(id);
         DomainCommandResponse domainCommandResponse = commandBus.push(deleteClubCommand);
         return domainCommandResponse.isSuccess() ?
                 ResponseEntity.ok().build() :

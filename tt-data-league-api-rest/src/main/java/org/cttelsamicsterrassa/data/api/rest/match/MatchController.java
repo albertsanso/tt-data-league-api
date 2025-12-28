@@ -1,7 +1,6 @@
 package org.cttelsamicsterrassa.data.api.rest.match;
 
 import org.albertsanso.commons.query.QueryBus;
-import org.cttelsamicsterrassa.data.api.core.player.application.FindPlayerByNameQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

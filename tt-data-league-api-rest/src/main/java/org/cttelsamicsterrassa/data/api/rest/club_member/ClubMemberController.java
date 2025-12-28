@@ -47,14 +47,14 @@ public class ClubMemberController {
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @GetMapping("/find_by_club_id")
-    public ResponseEntity<List<ClubMemberDto>> getClubMembersByClubId(@RequestParam("clubId") UUID clubId) {
+    @GetMapping("/find_by_club_id/{clubId}")
+    public ResponseEntity<List<ClubMemberDto>> getClubMembersByClubId(@PathVariable("clubId") UUID clubId) {
         FindClubMembersByClubIdQuery query = new FindClubMembersByClubIdQuery(clubId);
         return returnMultipleCLubMembersResponse(queryBus.push(query));
     }
 
-    @GetMapping("/find_by_practicioner_id")
-    public ResponseEntity<List<ClubMemberDto>> getClubMembersByPracticionerId(@RequestParam("practicionerId") UUID practicionerId) {
+    @GetMapping("/find_by_practicioner_id/{practicionerId")
+    public ResponseEntity<List<ClubMemberDto>> getClubMembersByPracticionerId(@PathVariable("practicionerId") UUID practicionerId) {
         FindClubMembersByPracticionerIdQuery query = new FindClubMembersByPracticionerIdQuery(practicionerId);
         return returnMultipleCLubMembersResponse(queryBus.push(query));
     }

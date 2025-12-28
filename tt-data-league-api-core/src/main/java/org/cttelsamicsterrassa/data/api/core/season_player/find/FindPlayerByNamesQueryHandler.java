@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.core.player.application;
+package org.cttelsamicsterrassa.data.api.core.season_player.find;
 
 import org.albertsanso.commons.query.DomainQueryHandler;
 import org.albertsanso.commons.query.DomainQueryResponse;
