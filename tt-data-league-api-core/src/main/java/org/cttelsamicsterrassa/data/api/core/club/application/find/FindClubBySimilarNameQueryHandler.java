@@ -7,19 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FindClubByNameQueryHandler extends DomainQueryHandler<FindClubByNameQuery> {
+public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindClubBySimilarNameQuery> {
 
     private final ClubRepository clubRepository;
 
     @Autowired
-    public FindClubByNameQueryHandler(ClubRepository clubRepository) {
+    public FindClubBySimilarNameQueryHandler(ClubRepository clubRepository) {
         this.clubRepository = clubRepository;
     }
 
     @Override
-    public DomainQueryResponse handle(FindClubByNameQuery findClubByNameQuery) {
-        return clubRepository.findByName(findClubByNameQuery.getNameToSearch())
-                .map(DomainQueryResponse::sucessResponse)
-                .orElseGet(() -> DomainQueryResponse.failResponse("Club with that Name doesn't exist"));
+    public DomainQueryResponse handle(FindClubBySimilarNameQuery findClubBySimilarNameQuery) {
+        return DomainQueryResponse.sucessResponse(clubRepository.searchBySimilarName(findClubBySimilarNameQuery.getNameToSearch()));
     }
 }
