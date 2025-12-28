@@ -53,7 +53,7 @@ public class ClubMemberController {
         return returnMultipleCLubMembersResponse(queryBus.push(query));
     }
 
-    @GetMapping("/find_by_practicioner_id/{practicionerId")
+    @GetMapping("/find_by_practicioner_id/{practicionerId}")
     public ResponseEntity<List<ClubMemberDto>> getClubMembersByPracticionerId(@PathVariable("practicionerId") UUID practicionerId) {
         FindClubMembersByPracticionerIdQuery query = new FindClubMembersByPracticionerIdQuery(practicionerId);
         return returnMultipleCLubMembersResponse(queryBus.push(query));
