@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public class FindSeasonPlayerByLicenseQuery extends DomainQuery {
     private final String licenseTag;
-    private final UUID licenseId;
+    private final String licenseId;
 
-    public FindSeasonPlayerByLicenseQuery(String licenseTag, UUID licenseId) {
+    public FindSeasonPlayerByLicenseQuery(String licenseTag, String licenseId) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
         this.licenseTag = licenseTag;
         this.licenseId = licenseId;
@@ -19,7 +19,7 @@ public class FindSeasonPlayerByLicenseQuery extends DomainQuery {
         return licenseTag;
     }
 
-    public UUID getLicenseId() {
+    public String getLicenseId() {
         return licenseId;
     }
 }

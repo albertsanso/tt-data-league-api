@@ -10,6 +10,7 @@ import org.cttelsamicsterrassa.data.api.core.season_player.find.FindPlayerByName
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindPlayerByNamesQuery;
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByIdQuery;
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByLicenseQuery;
+import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByPracticionerIdQuery;
 import org.cttelsamicsterrassa.data.core.domain.model.SeasonPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,6 +94,15 @@ public class SeasonPlayerController {
     @PostMapping("/find_by_license")
     public ResponseEntity<List<SeasonPlayerDto>> findByLicense(@RequestBody LicenseDto license) {
         FindSeasonPlayerByLicenseQuery domainQuery = new FindSeasonPlayerByLicenseQuery(license.licenseTag(), license.licenseId());
+        DomainQueryResponse queryResponse = queryBus.push(domainQuery);
+        return queryResponse.isSuccess() ?
+                ResponseEntity.ok(SeasonPlayerDto.fromObjectList(queryResponse.getResponse())) :
+                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GetMapping("/find_by_practicioner/{practicionerId}")
+    public ResponseEntity<List<SeasonPlayerDto>> findByPracticionerId(@PathVariable("practicionerId") UUID practicionerId) {
+        FindSeasonPlayerByPracticionerIdQuery domainQuery = new FindSeasonPlayerByPracticionerIdQuery(practicionerId);
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
         return queryResponse.isSuccess() ?
                 ResponseEntity.ok(SeasonPlayerDto.fromObjectList(queryResponse.getResponse())) :

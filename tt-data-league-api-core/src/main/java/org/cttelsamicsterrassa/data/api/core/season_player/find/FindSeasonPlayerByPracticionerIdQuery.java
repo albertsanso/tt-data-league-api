@@ -6,14 +6,14 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class FindSeasonPlayerByPracticionerIdQuery extends DomainQuery {
-    private final String practicionerId;
+    private final UUID practicionerId;
 
-    public FindSeasonPlayerByPracticionerIdQuery(String practicionerId) {
+    public FindSeasonPlayerByPracticionerIdQuery(UUID practicionerId) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
         this.practicionerId = practicionerId;
     }
 
-    public String getPracticionerId() {
+    public UUID getPracticionerId() {
         return practicionerId;
     }
 }
