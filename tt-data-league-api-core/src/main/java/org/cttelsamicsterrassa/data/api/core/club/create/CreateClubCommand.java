@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.core.club.application.modify;
+package org.cttelsamicsterrassa.data.api.core.club.create;
 
 import org.albertsanso.commons.command.DomainCommand;
 
@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public class ModifyClubCommand extends DomainCommand {
+public class CreateClubCommand extends DomainCommand {
 
     private final UUID id;
 
@@ -14,9 +14,9 @@ public class ModifyClubCommand extends DomainCommand {
 
     private final List<String> yearRanges;
 
-    public ModifyClubCommand(UUID id, String name, List<String> yearRanges) {
+    public CreateClubCommand(UUID clubId, String name, List<String> yearRanges) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
-        this.id = id;
+        this.id = clubId;
         this.name = name;
         this.yearRanges = yearRanges;
     }

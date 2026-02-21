@@ -1,11 +1,10 @@
 package org.cttelsamicsterrassa.data.api.rest.season_player_result;
 
-import org.cttelsamicsterrassa.data.core.domain.model.CompetitionInfo;
-import org.cttelsamicsterrassa.data.core.domain.model.SeasonPlayer;
+import java.util.UUID;
 
 public record SeasonPlayerResultDto(
-        CompetitionInfo competitionInfo,
-        SeasonPlayer seasonPlayer,
+        CompetitionInfoDto competitionInfo,
+        UUID seasonPlayerId,
         String matchDay,
         int matchDayNumber,
         String matchGamePoints,

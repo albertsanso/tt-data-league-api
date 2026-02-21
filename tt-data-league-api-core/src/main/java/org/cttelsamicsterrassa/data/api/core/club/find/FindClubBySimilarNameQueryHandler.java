@@ -1,10 +1,15 @@
-package org.cttelsamicsterrassa.data.api.core.club.application.find;
+package org.cttelsamicsterrassa.data.api.core.club.find;
 
 import org.albertsanso.commons.query.DomainQueryHandler;
 import org.albertsanso.commons.query.DomainQueryResponse;
+import org.cttelsamicsterrassa.data.core.domain.model.Club;
 import org.cttelsamicsterrassa.data.core.domain.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.ArrayList;
 
 @Component
 public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindClubBySimilarNameQuery> {
@@ -18,6 +23,11 @@ public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindCl
 
     @Override
     public DomainQueryResponse handle(FindClubBySimilarNameQuery findClubBySimilarNameQuery) {
-        return DomainQueryResponse.sucessResponse(clubRepository.searchBySimilarName(findClubBySimilarNameQuery.getNameToSearch()));
+        Collection<Club> results = clubRepository.searchBySimilarName(findClubBySimilarNameQuery.getNameToSearch());
+        if (results == null) {
+            results = List.of();
+        }
+        // return a mutable copy if needed by later consumers
+        return DomainQueryResponse.sucessResponse(new ArrayList<>(results));
     }
 }

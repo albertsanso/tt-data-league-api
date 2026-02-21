@@ -7,7 +7,6 @@ import org.albertsanso.commons.query.QueryBus;
 import org.cttelsamicsterrassa.data.api.core.club_member.create.CreateClubMemberCommand;
 import org.cttelsamicsterrassa.data.api.core.club_member.find.FindClubMembersByClubIdQuery;
 import org.cttelsamicsterrassa.data.api.core.club_member.find.FindClubMembersByPracticionerIdQuery;
-import org.cttelsamicsterrassa.data.api.core.club_member.find.FindClubMembersByPracticionerIdQueryHandler;
 import org.cttelsamicsterrassa.data.core.domain.model.ClubMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,15 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/club_member")
+@ClubMemberOpenAPIv1Controller
 public class ClubMemberController {
 
     @Autowired

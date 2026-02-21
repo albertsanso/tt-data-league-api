@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.core.club.application.delete;
+package org.cttelsamicsterrassa.data.api.core.club.delete;
 
 import org.albertsanso.commons.command.DomainCommand;
 

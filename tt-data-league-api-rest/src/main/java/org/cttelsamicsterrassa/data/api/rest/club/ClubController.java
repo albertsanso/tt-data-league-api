@@ -4,11 +4,12 @@ import org.albertsanso.commons.command.CommandBus;
 import org.albertsanso.commons.command.DomainCommandResponse;
 import org.albertsanso.commons.query.DomainQueryResponse;
 import org.albertsanso.commons.query.QueryBus;
-import org.cttelsamicsterrassa.data.api.core.club.application.create.CreateClubCommand;
-import org.cttelsamicsterrassa.data.api.core.club.application.delete.DeleteClubCommand;
-import org.cttelsamicsterrassa.data.api.core.club.application.find.FindClubByIdQuery;
-import org.cttelsamicsterrassa.data.api.core.club.application.find.FindClubByNameQuery;
-import org.cttelsamicsterrassa.data.api.core.club.application.modify.ModifyClubCommand;
+import org.cttelsamicsterrassa.data.api.core.club.create.CreateClubCommand;
+import org.cttelsamicsterrassa.data.api.core.club.delete.DeleteClubCommand;
+import org.cttelsamicsterrassa.data.api.core.club.find.FindClubByIdQuery;
+import org.cttelsamicsterrassa.data.api.core.club.find.FindClubByNameQuery;
+import org.cttelsamicsterrassa.data.api.core.club.find.FindClubBySimilarNameQuery;
+import org.cttelsamicsterrassa.data.api.core.club.modify.ModifyClubCommand;
 import org.cttelsamicsterrassa.data.core.domain.model.Club;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/club")
+@ClubOpenAPIv1Controller
 public class ClubController {
 
     @Autowired
@@ -52,6 +53,28 @@ public class ClubController {
                 ResponseEntity.ok(ClubDto.fromObject((Club) queryResponse.getResponse())) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
+    }
+
+    @GetMapping("/find_by_similar_name")
+    public ResponseEntity<List<ClubDto>> findClubBySimilarName(@RequestParam("name") String name) {
+        FindClubBySimilarNameQuery findClubBySimilarNameQuery = new FindClubBySimilarNameQuery(name);
+        DomainQueryResponse queryResponse = queryBus.push(findClubBySimilarNameQuery);
+        if (!queryResponse.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        Collection<?> response = (Collection<?>) queryResponse.getResponse();
+        if (response == null) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<ClubDto> dtos = response.stream()
+                .filter(Club.class::isInstance)
+                .map(Club.class::cast)
+                .map(ClubDto::fromObject)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping

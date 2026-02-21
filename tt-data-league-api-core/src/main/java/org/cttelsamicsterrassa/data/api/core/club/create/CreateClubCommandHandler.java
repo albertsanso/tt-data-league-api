@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.core.club.application.create;
+package org.cttelsamicsterrassa.data.api.core.club.create;
 
 import org.albertsanso.commons.command.DomainCommandHandler;
 import org.albertsanso.commons.command.DomainCommandResponse;
