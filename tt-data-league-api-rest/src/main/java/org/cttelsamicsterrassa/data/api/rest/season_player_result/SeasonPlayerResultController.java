@@ -30,7 +30,7 @@ public class SeasonPlayerResultController {
 
         CreateSeasonPlayerResultCommand createSeasonPlayerResultCommand = new CreateSeasonPlayerResultCommand(
                 competitionInfo,
-                seasonPlayerDto.seasonPlayerId(),
+                seasonPlayerDto.seasonPlayer().id(),
                 seasonPlayerDto.matchDay(),
                 seasonPlayerDto.matchDayNumber(),
                 seasonPlayerDto.matchGamePoints(),

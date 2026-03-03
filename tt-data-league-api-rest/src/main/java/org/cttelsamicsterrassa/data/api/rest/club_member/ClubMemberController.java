@@ -38,27 +38,45 @@ public class ClubMemberController {
         );
         DomainCommandResponse domainCommandResponse = commandBus.push(createClubMemberCommand);
         return domainCommandResponse.isSuccess() ?
-                ResponseEntity.ok(ClubMemberDto.fromObject((ClubMember) domainCommandResponse.getResponse())) :
+                ResponseEntity.ok(ClubMemberDto.fromDomain((ClubMember) domainCommandResponse.getResponse())) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @GetMapping("/find_by_club_id/{clubId}")
     public ResponseEntity<List<ClubMemberDto>> getClubMembersByClubId(@PathVariable("clubId") UUID clubId) {
         FindClubMembersByClubIdQuery query = new FindClubMembersByClubIdQuery(clubId);
-        return returnMultipleCLubMembersResponse(queryBus.push(query));
+        return returnMultipleClubMembersResponse(queryBus.push(query));
+    }
+
+    @GetMapping("/enriched/find_by_club_id/{clubId}")
+    public ResponseEntity<List<EnrichedClubMemberDto>> getEnrichedClubMembersByClubId(@PathVariable("clubId") UUID clubId) {
+        FindClubMembersByClubIdQuery query = new FindClubMembersByClubIdQuery(clubId);
+        return returnMultipleEnrichedClubMembersResponse(queryBus.push(query));
     }
 
     @GetMapping("/find_by_practicioner_id/{practicionerId}")
     public ResponseEntity<List<ClubMemberDto>> getClubMembersByPracticionerId(@PathVariable("practicionerId") UUID practicionerId) {
         FindClubMembersByPracticionerIdQuery query = new FindClubMembersByPracticionerIdQuery(practicionerId);
-        return returnMultipleCLubMembersResponse(queryBus.push(query));
+        return returnMultipleClubMembersResponse(queryBus.push(query));
     }
 
-    private ResponseEntity<List<ClubMemberDto>> returnMultipleCLubMembersResponse(DomainQueryResponse response) {
+    private ResponseEntity<List<ClubMemberDto>> returnMultipleClubMembersResponse(DomainQueryResponse response) {
         if (response.isSuccess()) {
             List<ClubMember> clubMembers = (List<ClubMember>) response.getResponse();
             List<ClubMemberDto> clubMemberDtos = clubMembers.stream()
-                    .map(ClubMemberDto::fromObject)
+                    .map(ClubMemberDto::fromDomain)
+                    .toList();
+            return ResponseEntity.ok(clubMemberDtos);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    private ResponseEntity<List<EnrichedClubMemberDto>> returnMultipleEnrichedClubMembersResponse(DomainQueryResponse response) {
+        if (response.isSuccess()) {
+            List<ClubMember> clubMembers = (List<ClubMember>) response.getResponse();
+            List<EnrichedClubMemberDto> clubMemberDtos = clubMembers.stream()
+                    .map(EnrichedClubMemberDto::fromDomain)
                     .toList();
             return ResponseEntity.ok(clubMemberDtos);
         } else {

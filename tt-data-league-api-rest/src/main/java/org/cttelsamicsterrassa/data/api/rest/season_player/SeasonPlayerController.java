@@ -45,7 +45,7 @@ public class SeasonPlayerController {
         );
         DomainCommandResponse domainCommandResponse = commandBus.push(command);
         return domainCommandResponse.isSuccess() ?
-                ResponseEntity.ok(SeasonPlayerDto.fromObject((SeasonPlayer) domainCommandResponse.getResponse())) :
+                ResponseEntity.ok(SeasonPlayerDto.fromDomain((SeasonPlayer) domainCommandResponse.getResponse())) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -54,7 +54,7 @@ public class SeasonPlayerController {
         FindSeasonPlayerByIdQuery domainQuery = new FindSeasonPlayerByIdQuery(id);
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
         return queryResponse.isSuccess() ?
-                ResponseEntity.ok(SeasonPlayerDto.fromObject((SeasonPlayer) queryResponse.getResponse())) :
+                ResponseEntity.ok(SeasonPlayerDto.fromDomain((SeasonPlayer) queryResponse.getResponse())) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 

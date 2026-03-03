@@ -10,7 +10,7 @@ public record ClubMemberDto(
         UUID clubId,
         UUID practicionerId,
         List<String> yearRanges) {
-    public static ClubMemberDto fromObject(ClubMember clubMember) {
+    public static ClubMemberDto fromDomain(ClubMember clubMember) {
         return new ClubMemberDto(
                 clubMember.getId(),
                 clubMember.getClub().getId(),

@@ -13,7 +13,7 @@ public record SeasonPlayerDto(
         String licenseId,
         String licenseTag,
         String yearRange) {
-    public static SeasonPlayerDto fromObject(SeasonPlayer seasonPlayer) {
+    public static SeasonPlayerDto fromDomain(SeasonPlayer seasonPlayer) {
         return new SeasonPlayerDto(
                 seasonPlayer.getId(),
                 seasonPlayer.getClubMember().getId(),
@@ -27,9 +27,9 @@ public record SeasonPlayerDto(
         if (payload == null) return Collections.emptyList();
         if (payload instanceof List) {
             List<?> raw = (List<?>) payload;
-            return raw.stream().map(item -> fromObject((SeasonPlayer) item)).collect(Collectors.toList());
+            return raw.stream().map(item -> fromDomain((SeasonPlayer) item)).collect(Collectors.toList());
         }
         // If single object, return single-element list
-        return List.of(fromObject((SeasonPlayer) payload));
+        return List.of(fromDomain((SeasonPlayer) payload));
     }
 }
