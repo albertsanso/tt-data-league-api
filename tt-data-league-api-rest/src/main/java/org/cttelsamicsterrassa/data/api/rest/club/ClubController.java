@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.UUID;
 import java.util.List;
@@ -37,6 +38,7 @@ public class ClubController {
     private CommandBus commandBus;
 
     @GetMapping("/find_by_id")
+    @Operation(summary = "Find club by id", description = "Returns a club by its UUID")
     public ResponseEntity<ClubDto> findClubById(@RequestParam("id") UUID id) {
         FindClubByIdQuery findClubByIdQuery = new FindClubByIdQuery(id);
         DomainQueryResponse queryResponse = queryBus.push(findClubByIdQuery);
@@ -46,6 +48,7 @@ public class ClubController {
     }
 
     @GetMapping("/find_by_name")
+    @Operation(summary = "Find club by name", description = "Returns a club that matches the exact name")
     public ResponseEntity<ClubDto> findClubByName(@RequestParam("name") String name) {
         FindClubByNameQuery findClubByNameQuery = new FindClubByNameQuery(name);
         DomainQueryResponse queryResponse = queryBus.push(findClubByNameQuery);
@@ -56,6 +59,7 @@ public class ClubController {
     }
 
     @GetMapping("/find_by_similar_name")
+    @Operation(summary = "Find clubs by similar name", description = "Search clubs with a name similar to the provided value")
     public ResponseEntity<List<ClubDto>> findClubBySimilarName(@RequestParam("name") String name) {
         FindClubBySimilarNameQuery findClubBySimilarNameQuery = new FindClubBySimilarNameQuery(name);
         DomainQueryResponse queryResponse = queryBus.push(findClubBySimilarNameQuery);
@@ -78,6 +82,7 @@ public class ClubController {
     }
 
     @PostMapping
+    @Operation(summary = "Create club", description = "Create a new club from ClubDto")
     public ResponseEntity<ClubDto> createClub(@RequestBody ClubDto clubDto) {
         CreateClubCommand createClubCommand = new CreateClubCommand(
                 clubDto.id(),
@@ -92,6 +97,7 @@ public class ClubController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete club", description = "Delete an existing club by id")
     public ResponseEntity<Void> deleteClub(@PathVariable("id") UUID id) {
         DeleteClubCommand deleteClubCommand = new DeleteClubCommand(id);
         DomainCommandResponse domainCommandResponse = commandBus.push(deleteClubCommand);
@@ -101,6 +107,7 @@ public class ClubController {
     }
 
     @PutMapping
+    @Operation(summary = "Modify club", description = "Modify an existing club using ClubDto")
     public ResponseEntity<ClubDto> modifyClub(@RequestBody ClubDto clubDto) {
         ModifyClubCommand modifyClubCommand = new ModifyClubCommand(
                 clubDto.id(),

@@ -1,0 +1,3 @@
+can you make a plan from the current codebase into /PLAN.md ?
+
+deeply analyze tt-data-league-api-runtime module: AuthController and JWT base authentication components and add missing auth endpoints into openapi.yaml

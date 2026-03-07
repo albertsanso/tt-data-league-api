@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +24,13 @@ public class MatchController {
     private QueryBus queryBus;
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get match by id", description = "Return a simple match DTO by id")
     public MatchDto getMatch(@PathVariable("id") UUID id) {
         return new MatchDto(id, "Team A", "Team B", 3, 2, "2024-06-15");
     }
 
     @PostMapping("/enriched/find_matches")
+    @Operation(summary = "Find enriched matches", description = "Find matches enriched with season player results by criteria")
     public ResponseEntity<List<EnrichedMatchDto>> findMatches(@RequestBody FindMatchesRequestBodyDto requestBody) {
 
         FindMatchesQuery findMatchesQuery = new FindMatchesQuery(
@@ -53,5 +56,17 @@ public class MatchController {
         } else {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    public void findAllMatchesByClubAndCategoryAndSeason() {
+
+    }
+
+    public void findAllMatchesByPlayerAndSeason() {
+
+    }
+
+    public void findAllMatchesBySeasonAndCompetitionAndDay() {
+
     }
 }

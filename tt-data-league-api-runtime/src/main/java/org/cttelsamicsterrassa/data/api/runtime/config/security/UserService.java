@@ -34,12 +34,13 @@ public class UserService {
         return user;
     }
 
-    public String verify(Users user) {
+    public LoginResponse verify(Users user) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(user.getUsername());
+            String token = jwtService.generateToken(user.getUsername());
+            return new LoginResponse(token, user.getUsername());
         } else {
-            return "fail";
+            return null;
         }
     }
 

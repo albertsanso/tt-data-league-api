@@ -19,7 +19,7 @@ import java.util.Set;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Set<String> WHITELIST = Set.of("/login", "/register", "/error");
+    private static final Set<String> WHITELIST = Set.of("/api/v1/auth/login", "/api/v1/auth/register", "/error");
 
     @Autowired
     private JwtService jwtService;
@@ -30,12 +30,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenBlacklistService blacklistService;
 
-    /*
-    public JwtAuthenticationFilter(@Lazy JwtService jwtService, @Lazy UserDetailsService userDetailsService, @Lazy TokenBlacklistService blacklistService) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.blacklistService = blacklistService;
-    }*/
+    private static boolean isWhitelisted(String path) {
+        return WHITELIST.stream().anyMatch(whitelistedPath -> path.contains(whitelistedPath) || path.startsWith(whitelistedPath + "/"));
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -46,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         // Skip CORS preflight and public endpoints
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || WHITELIST.contains(path)) {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isWhitelisted(path)) {
             filterChain.doFilter(request, response);
             return;
         }

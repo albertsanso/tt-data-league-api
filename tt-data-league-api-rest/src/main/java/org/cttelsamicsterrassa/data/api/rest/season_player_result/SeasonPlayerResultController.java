@@ -1,5 +1,6 @@
 package org.cttelsamicsterrassa.data.api.rest.season_player_result;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.albertsanso.commons.command.CommandBus;
 import org.albertsanso.commons.command.DomainCommandResponse;
 import org.albertsanso.commons.query.QueryBus;
@@ -18,6 +19,7 @@ public class SeasonPlayerResultController {
     @Autowired
     private CommandBus commandBus;
 
+    @Operation(summary = "Create season player result", description = "Create a SeasonPlayerResult from DTO")
     public ResponseEntity<SeasonPlayerResultDto> createSeasonPlayerResult(@RequestBody SeasonPlayerResultDto seasonPlayerDto) {
         CompetitionInfo competitionInfo = new CompetitionInfo(
                 seasonPlayerDto.competitionInfo().type(),

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -35,6 +36,7 @@ public class SeasonPlayerController {
     private CommandBus commandBus;
 
     @PostMapping
+    @Operation(summary = "Create season player", description = "Create a season player from SeasonPlayerDto")
     public ResponseEntity<SeasonPlayerDto> createSeasonPlayer(@RequestBody SeasonPlayerDto seasonPlayerDto) {
 
         CreateSeasonPlayerCommand command = new CreateSeasonPlayerCommand(
@@ -50,6 +52,7 @@ public class SeasonPlayerController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get season player by id", description = "Returns a season player by UUID")
     public ResponseEntity<SeasonPlayerDto> findById(@PathVariable("id") UUID id) {
         FindSeasonPlayerByIdQuery domainQuery = new FindSeasonPlayerByIdQuery(id);
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
@@ -59,6 +62,7 @@ public class SeasonPlayerController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete season player", description = "Delete a season player by id")
     public ResponseEntity<Void> deleteSeasonPlayer(@PathVariable("id") UUID id) {
         DeleteSeasonPlayerCommand command = new DeleteSeasonPlayerCommand(id);
         DomainCommandResponse commandResponse = commandBus.push(command);
@@ -68,6 +72,7 @@ public class SeasonPlayerController {
     }
 
     @GetMapping("/search_by_name/{username}")
+    @Operation(summary = "Search season players by name", description = "Search players by similar name")
     public ResponseEntity<List<SeasonPlayerDto>> findAllPlayersBySimilarName(@PathVariable("username") String name) {
 
         FindPlayerByNameQuery domainQuery = new FindPlayerByNameQuery(name);
@@ -79,6 +84,7 @@ public class SeasonPlayerController {
     }
 
     @GetMapping("/search_by_names/{names}")
+    @Operation(summary = "Search season players by names", description = "Search by a list of names (comma-separated)")
     public ResponseEntity<List<SeasonPlayerDto>> findAllPlayersBySimilarNames(@PathVariable("names") List<String> names) {
         FindPlayerByNamesQuery domainQuery = new FindPlayerByNamesQuery(ZonedDateTime.now(), UUID.randomUUID(), names);
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
@@ -89,6 +95,7 @@ public class SeasonPlayerController {
     }
 
     @PostMapping("/find_by_license")
+    @Operation(summary = "Find season players by license", description = "Return players matching license info")
     public ResponseEntity<List<SeasonPlayerDto>> findByLicense(@RequestBody LicenseDto license) {
         FindSeasonPlayerByLicenseQuery domainQuery = new FindSeasonPlayerByLicenseQuery(license.licenseTag(), license.licenseId());
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
@@ -98,6 +105,7 @@ public class SeasonPlayerController {
     }
 
     @GetMapping("/find_by_practicioner/{practicionerId}")
+    @Operation(summary = "Find season players by practicioner id", description = "Return season players for a practicioner")
     public ResponseEntity<List<SeasonPlayerDto>> findByPracticionerId(@PathVariable("practicionerId") UUID practicionerId) {
         FindSeasonPlayerByPracticionerIdQuery domainQuery = new FindSeasonPlayerByPracticionerIdQuery(practicionerId);
         DomainQueryResponse queryResponse = queryBus.push(domainQuery);
