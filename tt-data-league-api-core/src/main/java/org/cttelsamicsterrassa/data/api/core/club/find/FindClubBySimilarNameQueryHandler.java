@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Component
-public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindClubBySimilarNameQuery> {
+public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindClubBySimilarNameQuery, List<Club>> {
 
     private final ClubRepository clubRepository;
 
@@ -22,7 +22,7 @@ public class FindClubBySimilarNameQueryHandler extends DomainQueryHandler<FindCl
     }
 
     @Override
-    public DomainQueryResponse handle(FindClubBySimilarNameQuery findClubBySimilarNameQuery) {
+    public DomainQueryResponse<List<Club>> handle(FindClubBySimilarNameQuery findClubBySimilarNameQuery) {
         Collection<Club> results = clubRepository.searchBySimilarName(findClubBySimilarNameQuery.getNameToSearch());
         if (results == null) {
             results = List.of();

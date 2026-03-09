@@ -3,6 +3,7 @@ package org.cttelsamicsterrassa.data.api.core.season_player_result.create;
 import org.albertsanso.commons.command.DomainCommand;
 import org.cttelsamicsterrassa.data.core.domain.model.CompetitionInfo;
 import org.cttelsamicsterrassa.data.core.domain.model.SeasonPlayer;
+import org.cttelsamicsterrassa.data.core.domain.model.TeamRole;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -16,8 +17,9 @@ public class CreateSeasonPlayerResultCommand extends DomainCommand {
     private final String matchGamePoints;
     private final int matchGamesWon;
     private final String matchPlayerLetter;
+    private final TeamRole matchPlayerRole;
 
-    public CreateSeasonPlayerResultCommand(CompetitionInfo competitionInfo, UUID seasonPlayerId, String matchDay, int matchDayNumber, String matchGamePoints, int matchGamesWon, String matchPlayerLetter) {
+    public CreateSeasonPlayerResultCommand(CompetitionInfo competitionInfo, UUID seasonPlayerId, String matchDay, int matchDayNumber, String matchGamePoints, int matchGamesWon, String matchPlayerLetter, TeamRole matchPlayerRole) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
         this.competitionInfo = competitionInfo;
         this.seasonPlayerId = seasonPlayerId;
@@ -26,6 +28,7 @@ public class CreateSeasonPlayerResultCommand extends DomainCommand {
         this.matchGamePoints = matchGamePoints;
         this.matchGamesWon = matchGamesWon;
         this.matchPlayerLetter = matchPlayerLetter;
+        this.matchPlayerRole = matchPlayerRole;
     }
 
     public CompetitionInfo getCompetitionInfo() {
@@ -54,5 +57,9 @@ public class CreateSeasonPlayerResultCommand extends DomainCommand {
 
     public String getMatchPlayerLetter() {
         return matchPlayerLetter;
+    }
+
+    public TeamRole getMatchPlayerRole() {
+        return matchPlayerRole;
     }
 }

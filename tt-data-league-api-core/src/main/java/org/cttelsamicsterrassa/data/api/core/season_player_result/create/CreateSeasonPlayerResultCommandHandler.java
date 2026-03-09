@@ -58,7 +58,8 @@ public class CreateSeasonPlayerResultCommandHandler extends DomainCommandHandler
                             new int[]{},
                             createSeasonPlayerResultCommand.getMatchGamesWon(),
                             uniqueRowId
-                    )
+                    ),
+                    createSeasonPlayerResultCommand.getMatchPlayerRole()
             );
 
 

@@ -8,6 +8,7 @@ public record FindMatchesRequestBodyDto(
         String competitionScopeTag,
         String competitionGroup,
         String competitionGender,
-        int matchDayNumber
+        int matchDayNumber,
+        String practitionerName
 ) {
 }

@@ -14,11 +14,14 @@ public class FindMatchesQuery extends DomainQuery {
 
     private final int matchDayNumber;
 
-    public FindMatchesQuery(String season, CompetitionInfo competitionInfo, int matchDayNumber) {
+    private final String practitionerName;
+
+    public FindMatchesQuery(String season, CompetitionInfo competitionInfo, int matchDayNumber, String practitionerName) {
         super(ZonedDateTime.now(), UUID.randomUUID().toString());
         this.season = season;
         this.competitionInfo = competitionInfo;
         this.matchDayNumber = matchDayNumber;
+        this.practitionerName = practitionerName;
     }
 
     public int getMatchDayNumber() {
@@ -31,5 +34,9 @@ public class FindMatchesQuery extends DomainQuery {
 
     public String getSeason() {
         return season;
+    }
+
+    public String getPractitionerName() {
+        return practitionerName;
     }
 }

@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public record EnrichedMatchDto(
         UUID id,
-        MatchSeasonPlayerResultDto playerAbcResultDto,
-        MatchSeasonPlayerResultDto playerXyzResultDto,
+        MatchSeasonPlayerResultDto playerLocalResultDto,
+        MatchSeasonPlayerResultDto playerVisitorResultDto,
         String season,
         CompetitionInfoDto competitionInfo,
         int matchDayNumber,
@@ -17,8 +17,8 @@ public record EnrichedMatchDto(
     public static EnrichedMatchDto fromDomain(PlayersSingleMatch playersSingleMatch) {
         return new EnrichedMatchDto(
                 playersSingleMatch.getId(),
-                MatchSeasonPlayerResultDto.fromDomain(playersSingleMatch.getSeasonPlayerResultAbc()),
-                MatchSeasonPlayerResultDto.fromDomain(playersSingleMatch.getSeasonPlayerResultXyz()),
+                MatchSeasonPlayerResultDto.fromDomain(playersSingleMatch.getSeasonPlayerResultLocal()),
+                MatchSeasonPlayerResultDto.fromDomain(playersSingleMatch.getSeasonPlayerResultVisitor()),
                 playersSingleMatch.getSeason(),
                 CompetitionInfoDto.fromDomain(playersSingleMatch.getCompetitionType()
                         , playersSingleMatch.getCompetitionCategory()

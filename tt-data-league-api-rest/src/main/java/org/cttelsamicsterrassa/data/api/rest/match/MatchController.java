@@ -1,5 +1,6 @@
 package org.cttelsamicsterrassa.data.api.rest.match;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.albertsanso.commons.query.DomainQueryResponse;
 import org.albertsanso.commons.query.QueryBus;
 import org.cttelsamicsterrassa.data.api.core.match.find.FindMatchesQuery;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,10 +43,11 @@ public class MatchController {
                         requestBody.competitionGroup(),
                         requestBody.competitionGender()
                 ),
-                requestBody.matchDayNumber()
+                requestBody.matchDayNumber(),
+                requestBody.practitionerName()
         );
 
-        DomainQueryResponse domainQueryResponse = queryBus.push(findMatchesQuery);
+        DomainQueryResponse<List<PlayersSingleMatch>> domainQueryResponse = queryBus.push(findMatchesQuery);
         if (domainQueryResponse.isSuccess()) {
             List<PlayersSingleMatch> matchesList = (List<PlayersSingleMatch>) domainQueryResponse.getResponse();
             List<EnrichedMatchDto> enrichedMatchesDtosList = matchesList.stream()

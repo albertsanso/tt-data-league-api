@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class FindClubMembersByClubIdQueryHandler extends DomainQueryHandler<FindClubMembersByClubIdQuery> {
+public class FindClubMembersByClubIdQueryHandler extends DomainQueryHandler<FindClubMembersByClubIdQuery, List<ClubMember>> {
 
     private final ClubMemberRepository clubMemberRepository;
 
@@ -20,7 +20,7 @@ public class FindClubMembersByClubIdQueryHandler extends DomainQueryHandler<Find
     }
 
     @Override
-    public DomainQueryResponse handle(FindClubMembersByClubIdQuery findClubMembersByClubIdQuery) {
+    public DomainQueryResponse<List<ClubMember>> handle(FindClubMembersByClubIdQuery findClubMembersByClubIdQuery) {
         List<ClubMember> clubMembersList = clubMemberRepository.findByClubId(
                 findClubMembersByClubIdQuery.getClubId());
 

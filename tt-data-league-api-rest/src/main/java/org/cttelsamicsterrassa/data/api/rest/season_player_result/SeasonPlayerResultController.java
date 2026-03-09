@@ -6,6 +6,7 @@ import org.albertsanso.commons.command.DomainCommandResponse;
 import org.albertsanso.commons.query.QueryBus;
 import org.cttelsamicsterrassa.data.api.core.season_player_result.create.CreateSeasonPlayerResultCommand;
 import org.cttelsamicsterrassa.data.core.domain.model.CompetitionInfo;
+import org.cttelsamicsterrassa.data.core.domain.model.TeamRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +38,8 @@ public class SeasonPlayerResultController {
                 seasonPlayerDto.matchDayNumber(),
                 seasonPlayerDto.matchGamePoints(),
                 seasonPlayerDto.matchGamesWon(),
-                seasonPlayerDto.matchPlayerLetter()
+                seasonPlayerDto.matchPlayerLetter(),
+                TeamRole.LOCAL
         );
 
         DomainCommandResponse domainCommandResponse = commandBus.push(createSeasonPlayerResultCommand);

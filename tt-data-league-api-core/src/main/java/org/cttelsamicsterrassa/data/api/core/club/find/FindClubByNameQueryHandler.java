@@ -2,12 +2,13 @@ package org.cttelsamicsterrassa.data.api.core.club.find;
 
 import org.albertsanso.commons.query.DomainQueryHandler;
 import org.albertsanso.commons.query.DomainQueryResponse;
+import org.cttelsamicsterrassa.data.core.domain.model.Club;
 import org.cttelsamicsterrassa.data.core.domain.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FindClubByNameQueryHandler extends DomainQueryHandler<FindClubByNameQuery> {
+public class FindClubByNameQueryHandler extends DomainQueryHandler<FindClubByNameQuery, Club> {
 
     private final ClubRepository clubRepository;
 
@@ -17,9 +18,10 @@ public class FindClubByNameQueryHandler extends DomainQueryHandler<FindClubByNam
     }
 
     @Override
-    public DomainQueryResponse handle(FindClubByNameQuery findClubByNameQuery) {
+    @SuppressWarnings("unchecked")
+    public DomainQueryResponse<Club> handle(FindClubByNameQuery findClubByNameQuery) {
         return clubRepository.findByName(findClubByNameQuery.getNameToSearch())
                 .map(DomainQueryResponse::sucessResponse)
-                .orElseGet(() -> DomainQueryResponse.failResponse("Club with that Name doesn't exist"));
+                .orElseGet(() -> (DomainQueryResponse<Club>) (DomainQueryResponse<?>) DomainQueryResponse.failResponse("Club with that Name doesn't exist"));
     }
 }

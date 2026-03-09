@@ -24,7 +24,7 @@ public record SeasonPlayerResultDto(
                 seasonPlayerResult.getMatchDayNumber(),
                 Arrays.toString(seasonPlayerResult.getGamePoints()),
                 seasonPlayerResult.getGamesWon(),
-                seasonPlayerResult.getMatchLinkageId(),
+                "",
                 seasonPlayerResult.getPlayerLetter()
         );
     }
