@@ -19,6 +19,7 @@
         <module>tt-data-league-api-rest</module>
         <module>tt-data-league-api-graphql</module>
         <module>tt-data-league-api-core</module>
+        <module>tt-data-league-api-repository-jpa</module>
     </modules>
 
     <properties>
@@ -153,6 +154,13 @@
                 <artifactId>lombok</artifactId>
                 <optional>true</optional>
                 <version>1.18.42</version>
+            </dependency>
+
+            <!-- Spring GraphQL -->
+            <dependency>
+                <groupId>org.springframework.graphql</groupId>
+                <artifactId>spring-graphql</artifactId>
+                <version>1.4.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -3,14 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.cttelsamicsterrassa</groupId>
         <artifactId>tt-data-league-api</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>tt-data-league-api-graphql</artifactId>
+    <artifactId>tt-data-league-api-repository-jpa</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -19,20 +18,6 @@
     </properties>
 
     <dependencies>
-        <!-- Spring GraphQL -->
-        <dependency>
-            <groupId>org.springframework.graphql</groupId>
-            <artifactId>spring-graphql</artifactId>
-        </dependency>
-
-        <!-- GraphQL Java implementation -->
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java</artifactId>
-            <version>21.0</version>
-        </dependency>
-
-        <!-- Domain and Repository -->
         <dependency>
             <groupId>org.cttelsamicsterrassa</groupId>
             <artifactId>tt-data-league-core-domain</artifactId>
@@ -43,18 +28,23 @@
             <artifactId>tt-data-league-core-repository-jpa</artifactId>
         </dependency>
 
-        <!-- Common utilities for Query Bus -->
-        <dependency>
-            <groupId>org.albertsanso</groupId>
-            <artifactId>querybus-synchronous-inmemory</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.albertsanso</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.albertsanso</groupId>
+            <artifactId>commandbus-synchronous-inmemory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.albertsanso</groupId>
+            <artifactId>querybus-synchronous-inmemory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.albertsanso</groupId>
+            <artifactId>eventbus-synchronous-inmemory</artifactId>
+        </dependency>
 
-        <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -62,24 +52,22 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
 
-        <!-- Lombok for convenience -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
         </dependency>
+
         <dependency>
-            <groupId>org.albertsanso</groupId>
-            <artifactId>commons-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.cttelsamicsterrassa</groupId>
-            <artifactId>tt-data-league-api-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
     </dependencies>
-
 </project>
