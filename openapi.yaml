@@ -11,15 +11,15 @@ servers:
     description: Local development server (inferred)
 tags:
   - name: Club API
-    description: Endpoints for managing clubs
-  - name: ClubMember API
-    description: Endpoints for managing club members
+    description: Endpoints for managing clubs in the table tennis league
+  - name: Club Member API
+    description: Endpoints for managing club members in the table tennis league
   - name: Season Player API
-    description: Endpoints for season players
+    description: Endpoints for managing season players in the table tennis league
   - name: Match API
-    description: Endpoints for matches
+    description: Endpoints for managing matches in the table tennis league
   - name: Season Player Result API
-    description: Endpoints for season player results
+    description: Endpoints for managing season player results in the table tennis league
   - name: Auth API
     description: Endpoints for authentication
 paths:
@@ -27,6 +27,7 @@ paths:
     get:
       tags: [Club API]
       summary: Find club by id
+      description: Returns a club by its UUID
       parameters:
         - name: id
           in: query
@@ -52,6 +53,7 @@ paths:
     get:
       tags: [Club API]
       summary: Find club by exact name
+      description: Returns a club that matches the exact name
       parameters:
         - name: name
           in: query
@@ -81,6 +83,7 @@ paths:
     get:
       tags: [Club API]
       summary: Find clubs by similar name
+      description: Search clubs with a name similar to the provided value
       parameters:
         - name: name
           in: query
@@ -106,6 +109,7 @@ paths:
     post:
       tags: [Club API]
       summary: Create a club
+      description: Create a new club from ClubDto
       requestBody:
         required: true
         content:
@@ -138,6 +142,7 @@ paths:
     put:
       tags: [Club API]
       summary: Modify a club
+      description: Modify an existing club using ClubDto
       requestBody:
         required: true
         content:
@@ -167,6 +172,7 @@ paths:
     delete:
       tags: [Club API]
       summary: Delete a club by id
+      description: Delete an existing club by id
       parameters:
         - name: id
           in: path
@@ -191,8 +197,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /club_member:
     post:
-      tags: [ClubMember API]
+      tags: [Club Member API]
       summary: Create a club member
+      description: Create a new club member from ClubMemberDto
       requestBody:
         required: true
         content:
@@ -224,8 +231,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /club_member/find_by_club_id/{clubId}:
     get:
-      tags: [ClubMember API]
+      tags: [Club Member API]
       summary: Get club members by club id
+      description: Returns list of club members for a club
       parameters:
         - name: clubId
           in: path
@@ -250,8 +258,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /club_member/enriched/find_by_club_id/{clubId}:
     get:
-      tags: [ClubMember API]
+      tags: [Club Member API]
       summary: Get enriched club members by club id
+      description: Returns enriched members with practicioner and club details
       parameters:
         - name: clubId
           in: path
@@ -276,8 +285,9 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /club_member/find_by_practicioner_id/{practicionerId}:
     get:
-      tags: [ClubMember API]
+      tags: [Club Member API]
       summary: Get club members by practicioner id
+      description: Returns list of club members for the practicioner
       parameters:
         - name: practicionerId
           in: path
@@ -304,6 +314,7 @@ paths:
     post:
       tags: [Season Player API]
       summary: Create a season player
+      description: Create a season player from SeasonPlayerDto
       requestBody:
         required: true
         content:
@@ -338,6 +349,7 @@ paths:
     get:
       tags: [Season Player API]
       summary: Get season player by id
+      description: Returns a season player by UUID
       parameters:
         - name: id
           in: path
@@ -361,6 +373,7 @@ paths:
     delete:
       tags: [Season Player API]
       summary: Delete season player
+      description: Delete a season player by id
       parameters:
         - name: id
           in: path
@@ -386,7 +399,8 @@ paths:
   /season_player/search_by_name/{username}:
     get:
       tags: [Season Player API]
-      summary: Search season players by similar name
+      summary: Search season players by name
+      description: Search players by similar name
       parameters:
         - name: username
           in: path
@@ -411,7 +425,8 @@ paths:
   /season_player/search_by_names/{names}:
     get:
       tags: [Season Player API]
-      summary: Search season players by multiple names (comma-separated)
+      summary: Search season players by names
+      description: Search by a list of names (comma-separated)
       parameters:
         - name: names
           in: path
@@ -438,6 +453,7 @@ paths:
     post:
       tags: [Season Player API]
       summary: Find season players by license
+      description: Return players matching license info
       requestBody:
         required: true
         content:
@@ -472,6 +488,7 @@ paths:
     get:
       tags: [Season Player API]
       summary: Find season players by practicioner id
+      description: Return season players for a practicioner
       parameters:
         - name: practicionerId
           in: path
@@ -498,6 +515,7 @@ paths:
     get:
       tags: [Match API]
       summary: Get match by id
+      description: Return a simple match DTO by id
       parameters:
         - name: id
           in: path
@@ -521,7 +539,8 @@ paths:
   /match/enriched/find_matches:
     post:
       tags: [Match API]
-      summary: Find enriched matches by season/competition/day
+      summary: Find enriched matches
+      description: Find matches enriched with season player results by criteria
       requestBody:
         required: true
         content:
@@ -562,6 +581,7 @@ paths:
     post:
       tags: [Season Player Result API]
       summary: Create a season player result
+      description: Create a SeasonPlayerResult from DTO
       requestBody:
         required: true
         content:
@@ -596,14 +616,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserRegistrationRequest'
+              $ref: '#/components/schemas/Users'
       responses:
         '200':
           description: User registered
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserDto'
+                $ref: '#/components/schemas/Users'
         '400':
           description: Bad request
           content:
@@ -625,7 +645,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserLoginRequest'
+              $ref: '#/components/schemas/Users'
       responses:
         '200':
           description: Login successful
@@ -654,6 +674,12 @@ paths:
       responses:
         '200':
           description: Logout successful
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized
           content:
@@ -686,7 +712,7 @@ components:
           example: ["2023-2024"]
     ClubMemberDto:
       type: object
-      required: [clubId, practicionerId]
+      required: [id, clubId, practicionerId]
       properties:
         id:
           type: string
@@ -745,7 +771,7 @@ components:
           example: "1990-05-01"
     SeasonPlayerDto:
       type: object
-      required: [clubMemberId, licenseId, licenseTag, yearRange]
+      required: [id, clubMemberId, licenseId, licenseTag, yearRange]
       properties:
         id:
           type: string
@@ -841,6 +867,9 @@ components:
         matchDayNumber:
           type: integer
           example: 5
+        practitionerName:
+          type: string
+          example: "John Doe"
     MatchSeasonPlayerResultDto:
       type: object
       properties:
@@ -864,9 +893,9 @@ components:
           type: string
           format: uuid
           example: "00000000-0000-0000-0000-000000000070"
-        playerAbcResultDto:
+        playerLocalResultDto:
           $ref: '#/components/schemas/MatchSeasonPlayerResultDto'
-        playerXyzResultDto:
+        playerVisitorResultDto:
           $ref: '#/components/schemas/MatchSeasonPlayerResultDto'
         season:
           type: string
@@ -898,28 +927,9 @@ components:
           type: string
         matchPlayerLetter:
           type: string
-    UserRegistrationRequest:
+    Users:
       type: object
       required: [username, password]
-      properties:
-        username:
-          type: string
-          example: "user123"
-        password:
-          type: string
-          example: "password123"
-    UserLoginRequest:
-      type: object
-      required: [username, password]
-      properties:
-        username:
-          type: string
-          example: "user123"
-        password:
-          type: string
-          example: "password123"
-    UserDto:
-      type: object
       properties:
         id:
           type: integer
@@ -927,6 +937,9 @@ components:
         username:
           type: string
           example: "user123"
+        password:
+          type: string
+          example: "password123"
     LoginResponse:
       type: object
       properties:
@@ -957,6 +970,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
 security:
   - bearerAuth: []
+

@@ -134,6 +134,12 @@
                 <version>9.4.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.8</version>
+            </dependency>
+
             <!-- JSON serialization via Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
