@@ -1,1 +1,0 @@
-# tt-data-league-api
