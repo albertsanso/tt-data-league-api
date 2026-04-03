@@ -1,7 +1,0 @@
-map DomainQUeryResponse to custom data transfer object in Rest domain
-
-the method findClubBySimilarName is returning only 1 ClubDto and the return is a list of ClubDto. Refactor to do that
-
-simplify the code of findClubBySimilarName method using best practices
-
-
