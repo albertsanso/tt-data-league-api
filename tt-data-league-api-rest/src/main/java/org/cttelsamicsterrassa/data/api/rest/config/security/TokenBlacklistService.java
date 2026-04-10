@@ -1,5 +1,4 @@
-package org.cttelsamicsterrassa.data.api.runtime.config.security;
-
+package org.cttelsamicsterrassa.data.api.rest.config.security;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,14 +14,20 @@ public class TokenBlacklistService {
     private final ConcurrentHashMap<String, Date> blacklist = new ConcurrentHashMap<>();
 
     public void blacklistToken(String token, Date expiry) {
-        if (token == null || expiry == null) return;
+        if (token == null || expiry == null) {
+            return;
+        }
         blacklist.put(token, expiry);
     }
 
     public boolean isBlacklisted(String token) {
-        if (token == null) return false;
+        if (token == null) {
+            return false;
+        }
         Date expiry = blacklist.get(token);
-        if (expiry == null) return false;
+        if (expiry == null) {
+            return false;
+        }
         if (expiry.before(new Date())) {
             blacklist.remove(token);
             return false;
@@ -30,16 +35,16 @@ public class TokenBlacklistService {
         return true;
     }
 
-    // periodic cleanup to avoid memory leak
     @Scheduled(fixedDelay = 60_000)
     public void cleanup() {
         Date now = new Date();
         Iterator<Map.Entry<String, Date>> it = blacklist.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, Date> e = it.next();
-            if (e.getValue().before(now)) {
+            Map.Entry<String, Date> entry = it.next();
+            if (entry.getValue().before(now)) {
                 it.remove();
             }
         }
     }
 }
+

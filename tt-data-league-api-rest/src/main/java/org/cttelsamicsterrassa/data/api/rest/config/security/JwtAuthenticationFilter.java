@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.runtime.config.security;
+package org.cttelsamicsterrassa.data.api.rest.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -42,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // Skip CORS preflight and public endpoints
         if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || isWhitelisted(path)) {
             filterChain.doFilter(request, response);
             return;
@@ -57,7 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtService.extractUsername(token);
             } catch (Exception e) {
-                // malformed/invalid token — reject with 401
                 SecurityContextHolder.clearContext();
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or malformed token");
                 return;
@@ -95,3 +93,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

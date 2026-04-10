@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.runtime.config.security;
+package org.cttelsamicsterrassa.data.api.rest.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,9 +17,7 @@ import java.util.function.Function;
 @Component
 public class JwtService {
 
-    //private final String secretkey = "my-secret-key-which-should-be-long-and-secure";
     private final String secretkey = "mys1ecr2etk4eywh6ich8shou0ldb1e3lo5nga8ndsecure";
-    private final long expiration = 1000 * 60 * 60; // 1 hour
 
     public String generateToken(String username) {
 
@@ -28,7 +26,7 @@ public class JwtService {
         claims.put("jti", jti);
 
         long now = System.currentTimeMillis();
-        long expiryMillis = now + 60L * 60L * 1000L * 30L; // 30 hours as original intent
+        long expiryMillis = now + 60L * 60L * 1000L * 30L;
 
         return Jwts.builder()
                 .setSubject(username)
@@ -77,3 +75,4 @@ public class JwtService {
                 .getPayload();
     }
 }
+

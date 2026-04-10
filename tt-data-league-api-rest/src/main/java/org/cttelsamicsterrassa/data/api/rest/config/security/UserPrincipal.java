@@ -1,5 +1,6 @@
-package org.cttelsamicsterrassa.data.api.runtime.config.security;
+package org.cttelsamicsterrassa.data.api.rest.config.security;
 
+import org.cttelsamicsterrassa.data.core.domain.model.auth.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,9 +10,9 @@ import java.util.Collections;
 
 public class UserPrincipal implements UserDetails {
 
-    private Users user;
+    private final User user;
 
-    public UserPrincipal(Users user) {
+    public UserPrincipal(User user) {
         this.user = user;
     }
 
@@ -22,7 +23,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getPasswordHash();
     }
 
     @Override
@@ -47,7 +48,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isActive();
     }
 }
-

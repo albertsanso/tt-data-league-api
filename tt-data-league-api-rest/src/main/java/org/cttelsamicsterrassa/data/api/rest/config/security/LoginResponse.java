@@ -1,4 +1,4 @@
-package org.cttelsamicsterrassa.data.api.runtime.config.security;
+package org.cttelsamicsterrassa.data.api.rest.config.security;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
