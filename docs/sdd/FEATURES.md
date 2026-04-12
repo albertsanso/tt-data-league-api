@@ -61,6 +61,10 @@ Any open questions, design decisions, or links.
 
 ## Backlog
 
+## Done
+
+---
+
 ### [FEAT-003] Complete missing endpoints for entities covering CRUD operations
 - **Status:** done
 - **Priority:** high
@@ -85,8 +89,6 @@ Complete any missing components, such as services and repositories, to support t
 
 #### Feature Details
 → See [FEAT-003-DETAILS.md](./FEAT-003-DETAILS.md) for a detailed breakdown of the feature, build plan, and implementation steps.
-
-## Done
 
 ---
 
