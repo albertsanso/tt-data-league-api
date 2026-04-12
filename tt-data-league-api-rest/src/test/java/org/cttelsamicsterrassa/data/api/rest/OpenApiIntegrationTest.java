@@ -5,6 +5,7 @@ import org.albertsanso.commons.command.CommandBus;
 import org.albertsanso.commons.query.QueryBus;
 import org.cttelsamicsterrassa.data.api.rest.club.ClubController;
 import org.cttelsamicsterrassa.data.api.rest.error.GlobalExceptionHandler;
+import org.cttelsamicsterrassa.data.api.rest.practicioner.PracticionerController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -52,6 +53,7 @@ public class OpenApiIntegrationTest {
         assertThat(response.getBody()).isNotNull();
         if (response.getStatusCode().is2xxSuccessful()) {
             assertThat(response.getBody()).contains("openapi");
+            assertThat(response.getBody()).contains("/api/v1/practicioner/find_by_similar_name");
         } else {
             assertThat(response.getBody()).contains("code").contains("message");
         }
@@ -73,7 +75,7 @@ public class OpenApiIntegrationTest {
 
     @SpringBootConfiguration
     @EnableAutoConfiguration
-    @Import({ClubController.class, GlobalExceptionHandler.class})
+    @Import({ClubController.class, PracticionerController.class, GlobalExceptionHandler.class})
     static class TestApplication {
 
         @Bean

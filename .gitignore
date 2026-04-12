@@ -25,3 +25,8 @@ replay_pid*
 
 # Maven build output
 target/
+
+# IDEA project files
+.idea/
+*.iml
+*.iws

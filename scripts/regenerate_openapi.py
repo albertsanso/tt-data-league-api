@@ -17,11 +17,15 @@ class OpenAPIGenerator:
         self.schemas = {}
         self.tags_seen = set()
         self.dto_types = {}
+        self.controller_annotations = {}
 
     def generate(self, project_root: str) -> Dict[str, Any]:
         """Generate complete OpenAPI spec"""
         # Scan DTOs first to build schema info
         self.scan_dtos(os.path.join(project_root, 'tt-data-league-api-rest'))
+
+        # Scan custom OpenAPI controller annotations for base paths and tags
+        self.scan_custom_controller_annotations(os.path.join(project_root, 'tt-data-league-api-rest'))
 
         # Scan controllers
         self.scan_controllers(os.path.join(project_root, 'tt-data-league-api-rest'))
@@ -62,6 +66,42 @@ class OpenAPIGenerator:
         }
 
         return spec
+
+    def scan_custom_controller_annotations(self, rest_module: str):
+        """Scan custom @*OpenAPIv1Controller annotations for base path/tag metadata"""
+        java_dir = os.path.join(rest_module, 'src/main/java/org/cttelsamicsterrassa/data/api')
+        if not os.path.exists(java_dir):
+            return
+
+        for root, _, files in os.walk(java_dir):
+            for file in files:
+                if not file.endswith('OpenAPIv1Controller.java'):
+                    continue
+
+                filepath = os.path.join(root, file)
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                annotation_name_match = re.search(r'public\s+@interface\s+(\w+)', content)
+                if not annotation_name_match:
+                    continue
+
+                annotation_name = annotation_name_match.group(1)
+                mapping_match = re.search(r'@RequestMapping\(\s*API_BASE_PATH_V1\s*\+\s*"([^"]+)"\s*\)', content)
+                tag_match = re.search(r'@Tag\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*description\s*=\s*"([^"]*)")?', content)
+
+                base_path = mapping_match.group(1) if mapping_match else ''
+                tag_name = tag_match.group(1) if tag_match else self._annotation_to_tag(annotation_name)
+                tag_description = tag_match.group(2) if tag_match and tag_match.group(2) else self._get_tag_description(tag_name)
+
+                if tag_name:
+                    self.tags_seen.add(tag_name)
+
+                self.controller_annotations[annotation_name] = {
+                    'base_path': base_path,
+                    'tag_name': tag_name,
+                    'tag_description': tag_description
+                }
 
     def _get_tag_description(self, tag: str) -> str:
         """Get description for a tag"""
@@ -218,53 +258,83 @@ class OpenAPIGenerator:
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
 
+        # Skip custom annotation definition files (handled separately)
+        if 'public @interface' in content:
+            return
+
         # Extract controller annotation/path
         controller_path = ''
+        controller_tag = None
 
-        # Check for OpenAPIv1Controller annotation
+        # Check for custom OpenAPIv1Controller annotation usage
         annotation_pattern = r'@(\w+OpenAPIv1Controller)'
         annotation_match = re.search(annotation_pattern, content)
         if annotation_match:
-            tag_name = self._annotation_to_tag(annotation_match.group(1))
-            self.tags_seen.add(tag_name)
+            annotation_name = annotation_match.group(1)
+            annotation_meta = self.controller_annotations.get(annotation_name, {})
+            controller_path = annotation_meta.get('base_path', '')
+            controller_tag = annotation_meta.get('tag_name', self._annotation_to_tag(annotation_name))
+            if controller_tag:
+                self.tags_seen.add(controller_tag)
 
         # Check for @RequestMapping
-        mapping_pattern = r'@RequestMapping\(API_BASE_PATH_V1 \+ "(/[^"]+)"\)'
-        mapping_match = re.search(mapping_pattern, content)
-        if mapping_match:
-            controller_path = mapping_match.group(1)
+        if not controller_path:
+            mapping_pattern = r'@RequestMapping\(\s*API_BASE_PATH_V1\s*\+\s*"([^"]+)"\s*\)'
+            mapping_match = re.search(mapping_pattern, content)
+            if mapping_match:
+                controller_path = mapping_match.group(1)
+
+        if not controller_tag:
+            class_name_match = re.search(r'public\s+class\s+(\w+Controller)', content)
+            if class_name_match:
+                base_name = class_name_match.group(1).replace('Controller', '')
+                controller_tag = f'{base_name} API' if base_name else 'API'
+            else:
+                controller_tag = 'API'
+            self.tags_seen.add(controller_tag)
 
         # Extract methods
-        method_pattern = r'(@GetMapping|@PostMapping|@PutMapping|@DeleteMapping)\s*(?:\(\s*(?:value\s*=\s*)?["\']([^"\']*)["\']?\))?[^{]*public\s+.*?(?=@|$)'
+        method_pattern = r'@(GetMapping|PostMapping|PutMapping|DeleteMapping)(?:\(([^)]*)\))?'
+        method_matches = list(re.finditer(method_pattern, content, re.DOTALL))
 
-        for match in re.finditer(method_pattern, content, re.DOTALL):
+        for idx, match in enumerate(method_matches):
             method_type = match.group(1)
-            method_path = match.group(2) or ''
+            annotation_args = (match.group(2) or '').strip()
+            method_path = ''
+            if annotation_args:
+                path_match = re.search(r'["\']([^"\']*)["\']', annotation_args)
+                if path_match:
+                    method_path = path_match.group(1)
 
             # Get the full method context
             method_start = match.start()
+            method_end = method_matches[idx + 1].start() if idx + 1 < len(method_matches) else len(content)
+            method_chunk = content[method_start:method_end]
+
             # Find the method signature
-            method_sig_pattern = r'public\s+(\w+(?:<[^>]+>)?)\s+(\w+)\s*\('
-            method_sig_match = re.search(method_sig_pattern, match.group(0))
+            method_sig_pattern = r'public\s+([\w<>\[\],.?\s]+?)\s+(\w+)\s*\('
+            method_sig_match = re.search(method_sig_pattern, method_chunk)
             if method_sig_match:
                 # Extract operation details
-                op_summary = self._extract_operation_summary(match.group(0))
-                op_description = self._extract_operation_description(match.group(0))
+                op_summary = self._extract_operation_summary(method_chunk)
+                op_description = self._extract_operation_description(method_chunk)
 
                 # Build full path
                 full_path = controller_path + method_path
+                if not full_path.startswith('/'):
+                    full_path = '/' + full_path
 
                 # Map HTTP method
-                http_method = method_type.replace('@', '').replace('Mapping', '').lower()
+                http_method = method_type.replace('Mapping', '').lower()
 
                 # Extract parameters and response
-                params = self._extract_parameters(match.group(0))
-                response_type = method_sig_match.group(1)
+                params = self._extract_parameters(method_chunk)
+                response_type = method_sig_match.group(1).strip().replace('\n', ' ')
 
                 # Create operation
                 operation = {
                     'summary': op_summary,
-                    'tags': [self.tags_seen.pop() if self.tags_seen else 'API'],
+                    'tags': [controller_tag or 'API'],
                     'parameters': params if params else [],
                     'responses': self._get_responses(response_type)
                 }
@@ -309,9 +379,9 @@ class OpenAPIGenerator:
         params = []
 
         # @RequestParam
-        req_param_pattern = r'@RequestParam\s*(?:\(\s*(?:value\s*=\s*)?["\']([^"\']+)["\']?\))?[^)]*(\w+)'
+        req_param_pattern = r'@RequestParam\s*(?:\(\s*(?:value\s*=\s*)?["\']([^"\']+)["\']?\))?[^)]*\)\s*([\w<>\[\],.?\s]+?)\s+(\w+)'
         for match in re.finditer(req_param_pattern, method_content):
-            param_name = match.group(1) or match.group(2)
+            param_name = match.group(1) or match.group(3)
             params.append({
                 'name': param_name,
                 'in': 'query',
@@ -320,14 +390,14 @@ class OpenAPIGenerator:
             })
 
         # @PathVariable
-        path_var_pattern = r'@PathVariable\s*(?:\(\s*(?:value\s*=\s*)?["\']([^"\']+)["\']?\))?[^)]*(\w+)'
+        path_var_pattern = r'@PathVariable\s*(?:\(\s*(?:value\s*=\s*)?["\']([^"\']+)["\']?\))?[^)]*\)\s*([\w<>\[\],.?\s]+?)\s+(\w+)'
         for match in re.finditer(path_var_pattern, method_content):
-            param_name = match.group(1) or match.group(2)
+            param_name = match.group(1) or match.group(3)
             params.append({
                 'name': param_name,
                 'in': 'path',
                 'required': True,
-                'schema': {'type': 'string', 'format': 'uuid' if 'Id' in param_name else 'string'}
+                'schema': {'type': 'string', 'format': 'uuid' if param_name.lower().endswith('id') else 'string'}
             })
 
         return params
@@ -371,6 +441,13 @@ class OpenAPIGenerator:
                 else:
                     del responses['200']['content']
                     responses['204'] = {'description': 'Deleted (no content)'}
+        else:
+            direct_type = return_type.replace(' ', '')
+            if direct_type and direct_type not in ['void', 'Void']:
+                # direct DTO/class return types (e.g., MatchDto)
+                responses['200']['content']['application/json']['schema'] = {
+                    '$ref': f'#/components/schemas/{direct_type}'
+                }
 
         return responses
 

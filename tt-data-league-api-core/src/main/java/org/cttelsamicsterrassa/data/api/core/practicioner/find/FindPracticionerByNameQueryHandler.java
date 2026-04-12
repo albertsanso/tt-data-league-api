@@ -7,8 +7,8 @@ import org.cttelsamicsterrassa.data.core.domain.repository.PracticionerRepositor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Query handler for retrieving practicioners by name.
@@ -26,9 +26,19 @@ public class FindPracticionerByNameQueryHandler extends DomainQueryHandler<FindP
 
     @Override
     public DomainQueryResponse<List<Practicioner>> handle(FindPracticionerByNameQuery findPracticionerByNameQuery) {
-        // TODO: Implement once findBySimilarName() is available in PracticionerRepository
-        // For now return empty list as a placeholder
-        return DomainQueryResponse.sucessResponse(new ArrayList<>());
+        String normalizedName = findPracticionerByNameQuery.getName() == null
+                ? ""
+                : findPracticionerByNameQuery.getName().trim().toLowerCase(Locale.ROOT);
+
+        List<Practicioner> allPracticioners = practicionerRepository.findAll();
+        List<Practicioner> resultList = allPracticioners == null
+                ? List.of()
+                : allPracticioners.stream()
+                .filter(practicioner -> practicioner.getFullName() != null)
+                .filter(practicioner -> practicioner.getFullName().toLowerCase(Locale.ROOT).contains(normalizedName))
+                .toList();
+
+        return DomainQueryResponse.sucessResponse(resultList);
     }
 }
 

@@ -73,7 +73,11 @@ type Match {
     matchDayNumber: String!
     uniqueRowMatchId: String!
     localPlayerName: String!
+    localPlayerLetter: String!
+    localPlayerScore: String!
     visitorPlayerName: String!
+    visitorPlayerLetter: String!
+    visitorPlayerScore: String!
     matchDateTime: String!
 }
 

@@ -3,7 +3,7 @@ package org.cttelsamicsterrassa.data.api.core.match.find.application;
 import org.albertsanso.commons.query.DomainQueryHandler;
 import org.albertsanso.commons.query.DomainQueryResponse;
 import org.cttelsamicsterrassa.data.core.domain.model.PlayersSingleMatch;
-import org.cttelsamicsterrassa.data.core.domain.repository.PlayersSingleMatchRepository;
+import org.cttelsamicsterrassa.data.core.domain.service.MatchQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,24 +18,24 @@ import java.util.List;
 public class FindMatchesBySeasonAndCompetitionAndMatchDayAndPracticionerNameQueryHandler
         extends DomainQueryHandler<FindMatchesBySeasonAndCompetitionAndMatchDayAndPracticionerNameQuery, List<PlayersSingleMatch>> {
 
-    private final PlayersSingleMatchRepository playersSingleMatchRepository;
+    private final MatchQueryService matchQueryService;
 
     @Autowired
     public FindMatchesBySeasonAndCompetitionAndMatchDayAndPracticionerNameQueryHandler(
-            PlayersSingleMatchRepository playersSingleMatchRepository) {
-        this.playersSingleMatchRepository = playersSingleMatchRepository;
+            MatchQueryService matchQueryService) {
+        this.matchQueryService = matchQueryService;
     }
 
     @Override
     public DomainQueryResponse<List<PlayersSingleMatch>> handle(
             FindMatchesBySeasonAndCompetitionAndMatchDayAndPracticionerNameQuery query) {
-        List<PlayersSingleMatch> matches = playersSingleMatchRepository.findBySeasonAndCompetitionAndMatchDayNumber(
+
+        List<PlayersSingleMatch> matches = matchQueryService.findMatchesByPracticionerName(
+                query.getPractitionerName(),
                 query.getSeason(),
                 query.getCompetitionInfo(),
-                query.getMatchDayNumber(),
-                query.getPractitionerName()
+                query.getMatchDayNumber()
         );
-
         return DomainQueryResponse.sucessResponse(matches);
     }
 }
