@@ -4,8 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.albertsanso.commons.command.CommandBus;
 import org.albertsanso.commons.query.QueryBus;
 import org.cttelsamicsterrassa.data.api.rest.club.ClubController;
+import org.cttelsamicsterrassa.data.api.rest.club_member.ClubMemberController;
 import org.cttelsamicsterrassa.data.api.rest.error.GlobalExceptionHandler;
+import org.cttelsamicsterrassa.data.api.rest.match.MatchController;
 import org.cttelsamicsterrassa.data.api.rest.practicioner.PracticionerController;
+import org.cttelsamicsterrassa.data.api.rest.season_player.SeasonPlayerController;
+import org.cttelsamicsterrassa.data.api.rest.season_player_result.SeasonPlayerResultController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -54,6 +58,10 @@ public class OpenApiIntegrationTest {
         if (response.getStatusCode().is2xxSuccessful()) {
             assertThat(response.getBody()).contains("openapi");
             assertThat(response.getBody()).contains("/api/v1/practicioner/find_by_similar_name");
+            assertThat(response.getBody()).contains("/api/v1/club_member/{id}");
+            assertThat(response.getBody()).contains("/api/v1/season_player");
+            assertThat(response.getBody()).contains("/api/v1/player_result/{id}");
+            assertThat(response.getBody()).contains("/api/v1/match/{id}");
         } else {
             assertThat(response.getBody()).contains("code").contains("message");
         }
@@ -75,7 +83,15 @@ public class OpenApiIntegrationTest {
 
     @SpringBootConfiguration
     @EnableAutoConfiguration
-    @Import({ClubController.class, PracticionerController.class, GlobalExceptionHandler.class})
+    @Import({
+            ClubController.class,
+            ClubMemberController.class,
+            PracticionerController.class,
+            SeasonPlayerController.class,
+            SeasonPlayerResultController.class,
+            MatchController.class,
+            GlobalExceptionHandler.class
+    })
     static class TestApplication {
 
         @Bean

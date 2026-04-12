@@ -1,16 +1,24 @@
 package org.cttelsamicsterrassa.data.api.rest.match;
 
 import io.swagger.v3.oas.annotations.Operation;
+import org.albertsanso.commons.command.CommandBus;
+import org.albertsanso.commons.command.DomainCommandResponse;
 import org.albertsanso.commons.query.DomainQueryResponse;
 import org.albertsanso.commons.query.QueryBus;
+import org.cttelsamicsterrassa.data.api.core.match.delete.application.DeleteMatchCommand;
+import org.cttelsamicsterrassa.data.api.core.match.find.application.FindMatchByIdQuery;
 import org.cttelsamicsterrassa.data.api.core.match.find.application.FindMatchesQuery;
+import org.cttelsamicsterrassa.data.api.core.match.modify.application.ModifyMatchCommand;
 import org.cttelsamicsterrassa.data.core.domain.model.CompetitionInfo;
 import org.cttelsamicsterrassa.data.core.domain.model.PlayersSingleMatch;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -22,10 +30,16 @@ public class MatchController {
     @Autowired
     private QueryBus queryBus;
 
+    @Autowired
+    private CommandBus commandBus;
+
     @GetMapping("/{id}")
     @Operation(summary = "Get match by id", description = "Return a simple match DTO by id")
-    public MatchDto getMatch(@PathVariable("id") UUID id) {
-        return new MatchDto(id, "Team A", "Team B", 3, 2, "2024-06-15");
+    public ResponseEntity<MatchDto> getMatch(@PathVariable("id") UUID id) {
+        DomainQueryResponse queryResponse = queryBus.push(new FindMatchByIdQuery(id));
+        return queryResponse.isSuccess()
+                ? ResponseEntity.ok(MatchDto.fromDomain((PlayersSingleMatch) queryResponse.getResponse()))
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @PostMapping("/enriched/find_matches")
@@ -56,6 +70,39 @@ public class MatchController {
         } else {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @PutMapping
+    @Operation(summary = "Modify match", description = "Modify an existing match using EnrichedMatchDto")
+    public ResponseEntity<EnrichedMatchDto> modifyMatch(@RequestBody EnrichedMatchDto dto) {
+        ModifyMatchCommand command = new ModifyMatchCommand(
+                dto.id(),
+                dto.season(),
+                new CompetitionInfo(
+                        dto.competitionInfo().type(),
+                        dto.competitionInfo().category(),
+                        dto.competitionInfo().scope(),
+                        dto.competitionInfo().scopeTag(),
+                        dto.competitionInfo().group(),
+                        dto.competitionInfo().gender()
+                ),
+                dto.matchDayNumber(),
+                dto.uniqueRowMatchId()
+        );
+
+        DomainCommandResponse response = commandBus.push(command);
+        return response.isSuccess()
+                ? ResponseEntity.ok(EnrichedMatchDto.fromDomain((PlayersSingleMatch) response.getResponse()))
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete match", description = "Delete a match by UUID")
+    public ResponseEntity<Void> deleteMatch(@PathVariable("id") UUID id) {
+        DomainCommandResponse response = commandBus.push(new DeleteMatchCommand(id));
+        return response.isSuccess()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     public void findAllMatchesByClubAndCategoryAndSeason() {

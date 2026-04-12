@@ -11,6 +11,7 @@ import org.cttelsamicsterrassa.data.api.core.season_player.find.FindPlayerByName
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByIdQuery;
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByLicenseQuery;
 import org.cttelsamicsterrassa.data.api.core.season_player.find.FindSeasonPlayerByPracticionerIdQuery;
+import org.cttelsamicsterrassa.data.api.core.season_player.modify.ModifySeasonPlayerCommand;
 import org.cttelsamicsterrassa.data.core.domain.model.SeasonPlayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -69,6 +71,23 @@ public class SeasonPlayerController {
         return commandResponse.isSuccess() ?
                 ResponseEntity.noContent().build() :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @PutMapping
+    @Operation(summary = "Modify season player", description = "Modify a season player using SeasonPlayerDto")
+    public ResponseEntity<SeasonPlayerDto> modifySeasonPlayer(@RequestBody SeasonPlayerDto seasonPlayerDto) {
+        ModifySeasonPlayerCommand command = new ModifySeasonPlayerCommand(
+                seasonPlayerDto.id(),
+                seasonPlayerDto.clubMemberId(),
+                seasonPlayerDto.licenseId(),
+                seasonPlayerDto.licenseTag(),
+                seasonPlayerDto.yearRange()
+        );
+
+        DomainCommandResponse response = commandBus.push(command);
+        return response.isSuccess()
+                ? ResponseEntity.ok(SeasonPlayerDto.fromDomain((SeasonPlayer) response.getResponse()))
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @GetMapping("/search_by_name/{username}")

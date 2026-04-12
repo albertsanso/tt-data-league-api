@@ -20,7 +20,7 @@ public class DeleteSeasonPlayerCommandHandler extends DomainCommandHandler<Delet
     public DomainCommandResponse handle(DeleteSeasonPlayerCommand deleteSeasonPlayerCommand) {
         return seasonPlayerRepository.findById(deleteSeasonPlayerCommand.getSeasonPlayerId())
                 .map(seasonPlayer -> {
-                    seasonPlayerRepository.delete(seasonPlayer);
+                    seasonPlayerRepository.deleteById(seasonPlayer.getId());
                     return DomainCommandResponse.successResponse(seasonPlayer);
                 })
                 .orElse(DomainCommandResponse.failResponse("SeasonPlayer not found"));
