@@ -19,7 +19,11 @@ public record MatchGraphQLDto(
         String visitorPlayerName,
         String visitorPlayerLetter,
         int visitorPlayerScore,
-        String matchDateTime
+        String matchDateTime,
+        String localClubId,
+        String localClubName,
+        String visitorClubId,
+        String visitorClubName
 ) {
     public static MatchGraphQLDto fromDomain(org.cttelsamicsterrassa.data.core.domain.model.PlayersSingleMatch match) {
         return new MatchGraphQLDto(
@@ -39,7 +43,11 @@ public record MatchGraphQLDto(
                 match.getSeasonPlayerResultVisitor().getSeasonPlayer().getClubMember().getPracticioner().getFullName(),
                 match.getSeasonPlayerResultVisitor().getMatchInfo().playerLetter(),
                 match.getSeasonPlayerResultVisitor().getMatchInfo().gamesWon(),
-                match.getMatchDateTime().toString()
+                match.getMatchDateTime().toString(),
+                match.getSeasonPlayerResultLocal().getSeasonPlayer().getClubMember().getClub().getId().toString(),
+                match.getSeasonPlayerResultLocal().getSeasonPlayer().getClubMember().getClub().getName(),
+                match.getSeasonPlayerResultVisitor().getSeasonPlayer().getClubMember().getClub().getId().toString(),
+                match.getSeasonPlayerResultVisitor().getSeasonPlayer().getClubMember().getClub().getName()
         );
     }
 }
