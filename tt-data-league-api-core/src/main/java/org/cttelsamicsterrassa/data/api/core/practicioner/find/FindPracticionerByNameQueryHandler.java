@@ -26,19 +26,9 @@ public class FindPracticionerByNameQueryHandler extends DomainQueryHandler<FindP
 
     @Override
     public DomainQueryResponse<List<Practicioner>> handle(FindPracticionerByNameQuery findPracticionerByNameQuery) {
-        String normalizedName = findPracticionerByNameQuery.getName() == null
-                ? ""
-                : findPracticionerByNameQuery.getName().trim().toLowerCase(Locale.ROOT);
 
-        List<Practicioner> allPracticioners = practicionerRepository.findAll();
-        List<Practicioner> resultList = allPracticioners == null
-                ? List.of()
-                : allPracticioners.stream()
-                .filter(practicioner -> practicioner.getFullName() != null)
-                .filter(practicioner -> practicioner.getFullName().toLowerCase(Locale.ROOT).contains(normalizedName))
-                .toList();
-
-        return DomainQueryResponse.sucessResponse(resultList);
+        List<Practicioner> allPracticioners = practicionerRepository.searchBySimilarName(findPracticionerByNameQuery.getName());
+        return DomainQueryResponse.sucessResponse(allPracticioners);
     }
 }
 
