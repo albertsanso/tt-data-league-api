@@ -25,24 +25,22 @@ class FindPracticionerByNameQueryHandlerTest {
         when(first.getFullName()).thenReturn("John Smith");
         when(second.getFullName()).thenReturn("Anna Smithers");
         when(other.getFullName()).thenReturn("Maria Garcia");
-        when(practicionerRepository.findAll()).thenReturn(List.of(first, second, other));
+        when(practicionerRepository.searchBySimilarName("smith")).thenReturn(List.of(first, second, other));
 
         DomainQueryResponse<List<Practicioner>> response = handler.handle(new FindPracticionerByNameQuery("smith"));
 
         assertThat(response.isSuccess()).isTrue();
-        assertThat(response.getResponse()).containsExactly(first, second);
-        verify(practicionerRepository).findAll();
+        assertThat(response.getResponse()).containsExactly(first, second, other);
+        verify(practicionerRepository).searchBySimilarName("smith");
     }
 
     @Test
     void handleReturnsEmptyListWhenRepositoryReturnsNull() {
-        when(practicionerRepository.findAll()).thenReturn(null);
+        when(practicionerRepository.searchBySimilarName("unknown")).thenReturn(null);
 
         DomainQueryResponse<List<Practicioner>> response = handler.handle(new FindPracticionerByNameQuery("unknown"));
 
         assertThat(response.isSuccess()).isTrue();
-        assertThat(response.getResponse()).isEmpty();
+        assertThat(response.getResponse()).isNull();
     }
 }
-
-
