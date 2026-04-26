@@ -42,6 +42,14 @@ This document is intentionally generic: it describes repeatable architecture and
 4. Make minimal, focused edits consistent with existing patterns.
 5. Validate impacted modules with compile/tests before finishing.
 
+## Module References
+For module-specific instructions, see:
+- [Domain module](./tt-data-league-api-core/AGENTS.md)
+- [Graphql adapter](./tt-data-league-api-graphql/AGENTS.md)
+- [REST adapter](./tt-data-league-api-rest/AGENTS.md)
+- [Runtime module](./tt-data-league-api-runtime/AGENTS.md)
+- [Persistence adapter](./tt-data-league-api-repository-jpa/AGENTS.md)
+
 ## Repository architecture (pattern view)
 
 The repository uses explicit vertical modules and horizontal layering:
