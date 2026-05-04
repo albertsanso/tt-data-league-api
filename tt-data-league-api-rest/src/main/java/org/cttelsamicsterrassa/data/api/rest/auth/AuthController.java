@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.cttelsamicsterrassa.data.api.rest.ControllerConfig.API_BASE_PATH_V1;
 
@@ -59,8 +61,13 @@ public class AuthController {
             Optional<User> authenticated = authenticationService.authenticateUser(
                     request.getUsername(), request.getPassword());
             if (authenticated.isPresent()) {
-                String token = jwtService.generateToken(authenticated.get().getUsername());
-                return ResponseEntity.ok(new LoginResponse(token, authenticated.get().getUsername()));
+                User authedUser = authenticated.get();
+                Set<String> roleNames = authedUser.getRoles() == null ? Set.of()
+                        : authedUser.getRoles().stream()
+                                .map(role -> role.getName())
+                                .collect(Collectors.toSet());
+                String token = jwtService.generateToken(authedUser.getUsername(), roleNames);
+                return ResponseEntity.ok(new LoginResponse(token, authedUser.getUsername()));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(new ErrorMessage("Invalid username or password"));

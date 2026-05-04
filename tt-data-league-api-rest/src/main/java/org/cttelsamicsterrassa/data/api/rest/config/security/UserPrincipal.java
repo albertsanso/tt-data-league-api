@@ -1,12 +1,16 @@
 package org.cttelsamicsterrassa.data.api.rest.config.security;
 
+import org.cttelsamicsterrassa.data.core.domain.model.auth.Role;
 import org.cttelsamicsterrassa.data.core.domain.model.auth.User;
+import org.cttelsamicsterrassa.data.core.domain.service.auth.RbacCatalog;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
 
@@ -18,7 +22,14 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+        Set<Role> roles = user.getRoles();
+        if (roles == null || roles.isEmpty()) {
+            return Collections.singleton(
+                    new SimpleGrantedAuthority("ROLE_" + RbacCatalog.defaultRoleName()));
+        }
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .collect(Collectors.toSet());
     }
 
     @Override

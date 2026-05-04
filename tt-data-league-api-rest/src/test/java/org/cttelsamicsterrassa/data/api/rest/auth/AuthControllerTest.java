@@ -18,11 +18,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,7 +87,7 @@ class AuthControllerTest {
     void loginReturnsTokenOnSuccess() throws Exception {
         User user = User.createNew("demo", "demo@example.com", "Password1!");
         when(authenticationService.authenticateUser("demo", "pwd")).thenReturn(Optional.of(user));
-        when(jwtService.generateToken("demo")).thenReturn("token-abc");
+        when(jwtService.generateToken(eq("demo"), anyCollection())).thenReturn("token-abc");
 
         LoginRequest req = new LoginRequest("demo", "pwd");
         mockMvc.perform(post("/api/v1/auth/login")

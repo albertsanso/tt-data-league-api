@@ -61,8 +61,12 @@ Any open questions, design decisions, or links.
 
 ## Backlog
 
+## Done
+
+---
+
 ### [FEAT-004] Adapt for Role and Permisions for User Management
-- **Status:** idea
+- **Status:** done
 - **Priority:** high
 - **Effort:** medium
 - **Depends on:** —
@@ -72,14 +76,13 @@ Adapt to dependencies for User management and repositories and Authentication to
 This will allow for more granular access control and better security in the application.
 
 #### Acceptance Criteria
-- [ ] User management supports roles and permissions.
-- [ ] Authentication system is updated to handle role-based access control.
-- [ ] All changes are properly tested and documented.
+- [x] User management supports roles and permissions.
+- [x] Authentication system is updated to handle role-based access control.
+- [x] All changes are properly tested and documented.
 
 #### Feature Details
 → See [FEAT-004-DETAILS.md](./FEAT-004-DETAILS.md) for a detailed breakdown of the feature, build plan, and implementation steps.
 
-## Done
 
 ---
 

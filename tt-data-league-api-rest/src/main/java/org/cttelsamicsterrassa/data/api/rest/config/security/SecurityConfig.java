@@ -1,12 +1,15 @@
 package org.cttelsamicsterrassa.data.api.rest.config.security;
 
+import org.cttelsamicsterrassa.data.core.domain.service.auth.RbacCatalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -28,10 +32,37 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Public auth endpoints
                         .requestMatchers(
                                 "/api/v1/auth/register",
                                 "/api/v1/auth/login"
                         ).permitAll()
+                        // Swagger UI and OpenAPI docs
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs"
+                        ).permitAll()
+                        // Actuator
+                        .requestMatchers("/actuator/**", "/error").permitAll()
+                        // User management — ADMIN only
+                        .requestMatchers("/api/v1/users/**")
+                                .hasRole(RbacCatalog.ADMIN)
+                        // Role catalogue — ADMIN, CLUB_MANAGER, ANALYST
+                        .requestMatchers(HttpMethod.GET, "/api/v1/roles/**")
+                                .hasAnyRole(RbacCatalog.ADMIN, RbacCatalog.CLUB_MANAGER, RbacCatalog.ANALYST)
+                        // Write operations — ADMIN and CLUB_MANAGER
+                        .requestMatchers(HttpMethod.POST, "/api/v1/**")
+                                .hasAnyRole(RbacCatalog.ADMIN, RbacCatalog.CLUB_MANAGER)
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/**")
+                                .hasAnyRole(RbacCatalog.ADMIN, RbacCatalog.CLUB_MANAGER)
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/**")
+                                .hasAnyRole(RbacCatalog.ADMIN, RbacCatalog.CLUB_MANAGER)
+                        // Read operations — ADMIN, CLUB_MANAGER, ANALYST, PRACTITIONER
+                        .requestMatchers(HttpMethod.GET, "/api/v1/**")
+                                .hasAnyRole(RbacCatalog.ADMIN, RbacCatalog.CLUB_MANAGER,
+                                            RbacCatalog.ANALYST, RbacCatalog.PRACTITIONER)
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -46,4 +77,3 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
-
